@@ -9,8 +9,11 @@ sourceSets {
 }
 
 dependencies {
+    implementation("ch.qos.logback:logback-classic:1.2.9")
+    implementation("io.github.microutils:kotlin-logging-jvm:2.0.11")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.0")
+    implementation(kotlin("stdlib-jdk8"))
 }
 
 tasks {
@@ -21,4 +24,10 @@ tasks {
 
 tasks.test {
     useJUnitPlatform()
+}
+repositories {
+    mavenCentral()
+}
+kotlin {
+    jvmToolchain(17)
 }
