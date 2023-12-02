@@ -1,7 +1,7 @@
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
-class Test {
+class Test01 {
     private val func = Day01()
 
     @Test
