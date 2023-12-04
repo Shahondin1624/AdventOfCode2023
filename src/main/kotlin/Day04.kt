@@ -5,19 +5,19 @@ class Day04 {
     private val logger = KotlinLogging.logger {}
 
     fun part1(input: List<String>): Int {
-        return input.map { parseLine(it) }
-            .map { card -> getPoints(card) }
+        return input.map { Card.parseLine(it) }
+            .map { it.getPoints() }
             .fold(0) { previous, now -> previous + now }
     }
 
 
     fun part2(input: List<String>): Int {
-        val cards = input.map { parseLine(it) }.toList()
+        val cards = input.map { Card.parseLine(it) }.toList()
         val cardAmountMap = initializeCardMap(cards)
         firstIteration(cards, cardAmountMap)
         for ((index, amount) in cardAmountMap.values.withIndex()) {
             val cardNumber = index + 1
-            val cardsWon = getAmountOfWinningNumbers(cards.getCardByNumber(cardNumber))
+            val cardsWon = cards.getCardByNumber(cardNumber).getAmountOfWinningNumbers()
             val lower = cardNumber.inc()
             val range = lower..<lower + cardsWon
             for (i in range) {
@@ -33,7 +33,7 @@ class Day04 {
     ) {
         for ((index, card) in cards.withIndex()) {
             val cardIndex = index + 1
-            val cardsWon = cardIndex + getAmountOfWinningNumbers(card)
+            val cardsWon = cardIndex + card.getAmountOfWinningNumbers()
             val range = cardIndex + 1..cardsWon
             for (i in range) {
                 cardAmountMap[i] = cardAmountMap[i]!!.inc()
@@ -45,29 +45,33 @@ class Day04 {
         cards.associate { it.number to 0 }.toMutableMap()
 }
 
-data class Card(val number: Int, val winningNumbers: List<Int>, val numbers: List<Int>)
+data class Card(val number: Int, val winningNumbers: Set<Int>, val numbers: Set<Int>) {
+    companion object Parser {
 
-//Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53
-fun parseLine(line: String): Card {
-    val outer = line.split(":".toRegex())
-    val cardNumber = outer[0].split("\\s+".toRegex())[1].toInt()
-    val numbers = outer[1].split("\\|".toRegex())
-    val winningNumbers = numbers[0].split("\\s+".toRegex()).parseToInts()
-    val myNumbers = numbers[1].split("\\s+".toRegex()).parseToInts()
-    return Card(cardNumber, winningNumbers, myNumbers)
+        //Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53
+        fun parseLine(line: String): Card {
+            val outer = line.split(":".toRegex())
+            val cardNumber = outer[0].split("\\s+".toRegex())[1].toInt()
+            val numbers = outer[1].split("\\|".toRegex())
+            val winningNumbers = numbers[0].split("\\s+".toRegex()).parseToInts()
+            val myNumbers = numbers[1].split("\\s+".toRegex()).parseToInts()
+            return Card(cardNumber, winningNumbers, myNumbers)
+        }
+    }
+
+    fun getPoints(): Int {
+        val winningNumbers = getAmountOfWinningNumbers()
+        return if (winningNumbers == 0) 0 else power2(winningNumbers - 1)
+    }
+
+    fun getAmountOfWinningNumbers() = this.numbers.intersect(this.winningNumbers).size
 }
 
-fun getPoints(card: Card): Int {
-    val winningNumbers = getAmountOfWinningNumbers(card)
-    return if (winningNumbers == 0) 0 else power2(winningNumbers - 1)
-}
 
-fun getAmountOfWinningNumbers(card: Card) = card.numbers.count { card.winningNumbers.contains(it) }
-
-
-private fun List<String>.parseToInts(): List<Int> {
+private fun List<String>.parseToInts(): Set<Int> {
     return this.filter { it.isNotEmpty() }
         .map { it.toInt() }
+        .toSet()
 }
 
 private fun List<Card>.getCardByNumber(number: Int): Card {
