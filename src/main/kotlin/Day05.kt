@@ -2,7 +2,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
-import java.util.*
 import java.util.regex.Matcher
 import kotlin.system.measureTimeMillis
 
@@ -37,7 +36,7 @@ class Day05 {
             }
             logger.debug { "Processing ${counter + 1}/${seedRanges.size} took $time ms" }
         }
-        return@runBlocking locations.min() ?: 0
+        return@runBlocking locations.min()
     }
 
     private fun calculateForSeed(
