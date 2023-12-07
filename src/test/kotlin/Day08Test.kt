@@ -1,7 +1,7 @@
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
-class TemplateTest {
+class Day08Test {
     private val func = Template()
     private val day = javaClass.simpleName.filter { it.isDigit() }.toInt()
     private val input = splitToList(
