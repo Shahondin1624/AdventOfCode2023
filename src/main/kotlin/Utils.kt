@@ -23,3 +23,7 @@ fun Any?.println() = println(this)
 fun splitToList(string: String): List<String> {
     return string.split("\n").toList()
 }
+
+fun getFileName(day: Int): String {
+    return String.format("Day%02d_1", day)
+}
