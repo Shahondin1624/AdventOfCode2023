@@ -1,5 +1,6 @@
 import java.math.BigInteger
 import java.security.MessageDigest
+import java.util.regex.Matcher
 import kotlin.io.path.Path
 import kotlin.io.path.readLines
 
@@ -26,4 +27,36 @@ fun splitToList(string: String): List<String> {
 
 fun getFileName(day: Int): String {
     return String.format("Day%02d_1", day)
+}
+
+fun Matcher.collectMatchingGroups(): List<String> {
+    val list: MutableList<String> = mutableListOf()
+    while (this.find()) {
+        list.add(this.group())
+    }
+    return list
+}
+
+fun lcm(val1: Long, val2: Long) = val1 / gcd(val1, val2) * val2
+
+fun lcm(numbers: List<Long>): Long {
+    if (numbers.size < 2) throw IllegalArgumentException("Must at least have two numbers to calculate lcm")
+    var num1 = numbers[0]
+    var num2 = numbers[1]
+    for (i in 2..numbers.size) {
+        num1 = lcm(num1, num2)
+        num2 = numbers.getOrElse(i) { -1L }
+    }
+    return num1
+}
+
+fun gcd(val1: Long, val2: Long): Long {
+    var num1 = val1
+    var num2 = val2
+    while (num2 != 0L) {
+        val temp = num2
+        num2 = num1 % num2
+        num1 = temp
+    }
+    return num1
 }
