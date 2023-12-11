@@ -60,3 +60,13 @@ fun gcd(val1: Long, val2: Long): Long {
     }
     return num1
 }
+
+inline fun <reified T: Number> String.toNum(noinline converterFunction: (String) -> T = { it.toLong() as T }): List<T> {
+    val pattern = "([+-]?\\d+\\.?\\d*\\b)".toRegex().toPattern()
+    val matcher = pattern.matcher(this)
+    return matcher.collectMatchingGroups().map(converterFunction)
+}
+
+inline fun <reified T> List<String>.parseLines(noinline lineParser: (String) -> T = { it.toLong() as T }): List<T> {
+    return this.map { lineParser.invoke(it) }
+}
